@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shopping_flutter/providers/cart.dart';
+import 'package:shopping_flutter/screens/cart_screen.dart';
+import 'package:shopping_flutter/widgets/badge.dart';
 import 'package:shopping_flutter/widgets/product_grid.dart';
 
 enum FilterOptions {
@@ -15,7 +19,6 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
   bool _showFavsOnly = false;
   @override
   Widget build(BuildContext context) {
-    int selectedMenu = 1;
     return Scaffold(
       appBar: AppBar(
         title: Text("Shopping"),
@@ -43,7 +46,22 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
               ];
             },
             icon: Icon(Icons.more_vert),
-          )
+          ),
+
+          /// Badge is a custom widget
+          Consumer<Cart>(
+            builder: (context, cartItem, child) {
+              return Badge(
+                child: child,
+                value: cartItem.itemCount.toString(),
+              );
+            },
+            child: IconButton(
+              icon: Icon(Icons.shopping_cart),
+              onPressed: () =>
+                  Navigator.pushNamed(context, CartScreen.routeName),
+            ),
+          ),
         ],
       ),
       body: ProductGrid(_showFavsOnly),
