@@ -47,6 +47,11 @@ class Cart with ChangeNotifier {
     notifyListeners();
   }
 
+  void removeCart(String itemKey) {
+    _items.remove(itemKey);
+    notifyListeners();
+  }
+
   double get totalAmount {
     var total = 0.0;
     _items.forEach((key, item) {
