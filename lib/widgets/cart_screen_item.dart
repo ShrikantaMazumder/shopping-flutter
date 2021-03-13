@@ -36,9 +36,6 @@ class CartScreenItem extends StatelessWidget {
       onDismissed: (direction) {
         cartProvider.removeCart(itemKey);
       },
-      // confirmDismiss: (direction) async {
-      //   print("dismissed");
-      // },
       child: Card(
         margin: const EdgeInsets.symmetric(
           horizontal: 15.0,

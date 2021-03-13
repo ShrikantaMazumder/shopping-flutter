@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopping_flutter/providers/cart.dart';
 import 'package:shopping_flutter/screens/cart_screen.dart';
+import 'package:shopping_flutter/widgets/app_drawer.dart';
 import 'package:shopping_flutter/widgets/badge.dart';
 import 'package:shopping_flutter/widgets/product_grid.dart';
 
@@ -23,6 +24,20 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
       appBar: AppBar(
         title: Text("Shopping"),
         actions: [
+          /// Badge is a custom widget
+          Consumer<Cart>(
+            builder: (context, cartItem, child) {
+              return Badge(
+                child: child,
+                value: cartItem.itemCount.toString(),
+              );
+            },
+            child: IconButton(
+              icon: Icon(Icons.shopping_cart),
+              onPressed: () =>
+                  Navigator.pushNamed(context, CartScreen.routeName),
+            ),
+          ),
           PopupMenuButton(
             onSelected: (FilterOptions selectedMenu) {
               setState(() {
@@ -47,23 +62,9 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
             },
             icon: Icon(Icons.more_vert),
           ),
-
-          /// Badge is a custom widget
-          Consumer<Cart>(
-            builder: (context, cartItem, child) {
-              return Badge(
-                child: child,
-                value: cartItem.itemCount.toString(),
-              );
-            },
-            child: IconButton(
-              icon: Icon(Icons.shopping_cart),
-              onPressed: () =>
-                  Navigator.pushNamed(context, CartScreen.routeName),
-            ),
-          ),
         ],
       ),
+      drawer: AppDrawer(),
       body: ProductGrid(_showFavsOnly),
     );
   }

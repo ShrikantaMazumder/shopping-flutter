@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopping_flutter/providers/cart.dart';
+import 'package:shopping_flutter/providers/order_provider.dart';
+import 'package:shopping_flutter/widgets/app_drawer.dart';
 import 'package:shopping_flutter/widgets/cart_screen_item.dart';
 
 class CartScreen extends StatelessWidget {
   static const routeName = "/cart";
   @override
   Widget build(BuildContext context) {
-    final totalAmount = Provider.of<Cart>(context).totalAmount;
-    final cartItems = Provider.of<Cart>(context).cartItems;
+    final cart = Provider.of<Cart>(context);
+    final totalAmount = cart.totalAmount;
+    final cartItems = cart.cartItems;
     return Scaffold(
       appBar: AppBar(
         title: Text("Your Cart"),
       ),
+      drawer: AppDrawer(),
       body: Column(
         children: [
           Card(
@@ -42,7 +46,14 @@ class CartScreen extends StatelessWidget {
                       "ORDER NOW",
                       style: TextStyle(color: Theme.of(context).primaryColor),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Provider.of<OrderProvider>(context, listen: false)
+                          .addOrder(
+                        cart.cartItems.values.toList(),
+                        totalAmount,
+                      );
+                      cart.clearCart();
+                    },
                   ),
                 ],
               ),
