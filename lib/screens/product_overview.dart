@@ -25,7 +25,7 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
         title: Text("Shopping"),
         actions: [
           /// Badge is a custom widget
-          Consumer<Cart>(
+          Consumer<CartProvider>(
             builder: (context, cartItem, child) {
               return Badge(
                 child: child,

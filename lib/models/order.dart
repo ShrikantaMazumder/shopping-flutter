@@ -1,9 +1,9 @@
-import 'package:shopping_flutter/providers/cart.dart';
+import 'package:shopping_flutter/models/cart.dart';
 
 class Order {
   final String id;
   final double total;
-  final List<CartItem> products;
+  final List<Cart> products;
   final DateTime dateTime;
 
   Order({

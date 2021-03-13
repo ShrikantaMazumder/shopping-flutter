@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:shopping_flutter/models/cart.dart';
 import 'package:shopping_flutter/models/order.dart';
-import 'package:shopping_flutter/providers/cart.dart';
 
 class OrderProvider with ChangeNotifier {
   List<Order> _items = [];
@@ -9,7 +9,7 @@ class OrderProvider with ChangeNotifier {
     return [..._items];
   }
 
-  void addOrder(List<CartItem> products, double total) {
+  void addOrder(List<Cart> products, double total) {
     _items.insert(
       0,
       Order(

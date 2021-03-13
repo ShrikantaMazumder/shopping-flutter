@@ -1,19 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:shopping_flutter/models/cart.dart';
 
-class CartItem {
-  final String id;
-  final String title;
-  final double price;
-  final int quantity;
+class CartProvider with ChangeNotifier {
+  Map<String, Cart> _items = {};
 
-  CartItem({this.id, this.title, this.price, this.quantity});
-}
-
-class Cart with ChangeNotifier {
-  Map<String, CartItem> _items = {};
-
-  Map<String, CartItem> get cartItems {
+  Map<String, Cart> get cartItems {
     return {..._items};
   }
 
@@ -26,7 +18,7 @@ class Cart with ChangeNotifier {
     if (product) {
       _items.update(
         productId,
-        (existingCart) => CartItem(
+        (existingCart) => Cart(
           id: existingCart.id,
           title: existingCart.title,
           price: existingCart.price,
@@ -36,7 +28,7 @@ class Cart with ChangeNotifier {
     } else {
       _items.putIfAbsent(
         productId,
-        () => CartItem(
+        () => Cart(
           id: DateTime.now().toString(),
           title: title,
           price: price,
