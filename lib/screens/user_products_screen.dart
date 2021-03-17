@@ -16,8 +16,9 @@ class UserProductsScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: Icon(Icons.add),
-            onPressed: () =>
-                Navigator.of(context).pushNamed(EditProductScreen.routeName),
+            onPressed: () => Navigator.of(context).pushNamed(
+              EditProductScreen.routeName,
+            ),
           ),
         ],
       ),
@@ -26,6 +27,7 @@ class UserProductsScreen extends StatelessWidget {
         itemCount: products.length,
         itemBuilder: (context, index) {
           return UserProductItem(
+            id: products[index].id,
             title: products[index].title,
             imageUrl: products[index].imageUrl,
           );
