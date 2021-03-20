@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shopping_flutter/models/product.dart';
 import 'package:shopping_flutter/providers/cart.dart';
-import 'package:shopping_flutter/providers/product.dart';
 import 'package:shopping_flutter/screens/product_detail_screen.dart';
 
 class ProductItem extends StatelessWidget {
@@ -15,6 +15,8 @@ class ProductItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final product = Provider.of<Product>(context, listen: false);
     final cart = Provider.of<CartProvider>(context, listen: false);
+    final scaffold = Scaffold.of(context);
+    final primaryColor = Theme.of(context).primaryColor;
     return ClipRRect(
       borderRadius: BorderRadius.circular(10.0),
       child: GridTile(
@@ -36,7 +38,22 @@ class ProductItem extends StatelessWidget {
                 icon: Icon(product.isFavorite
                     ? Icons.favorite
                     : Icons.favorite_border),
-                onPressed: () => product.toggleFavStatus(),
+                onPressed: () async {
+                  try {
+                    await product.toggleFavStatus();
+                  } catch (error) {
+                    scaffold.hideCurrentSnackBar();
+                    scaffold.showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          "Failed to add as favorite",
+                          textAlign: TextAlign.center,
+                        ),
+                        backgroundColor: primaryColor,
+                      ),
+                    );
+                  }
+                },
               );
             },
           ),
