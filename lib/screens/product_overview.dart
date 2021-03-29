@@ -23,6 +23,12 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
   bool _isLoading = false;
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
   void didChangeDependencies() {
     if (_isInit) {
       setState(() {
@@ -34,9 +40,7 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
         });
       });
     }
-    setState(() {
-      _isInit = false;
-    });
+    _isInit = false;
     super.didChangeDependencies();
   }
 

@@ -11,12 +11,12 @@ class UserProductsScreen extends StatelessWidget {
   /// Pull to refresh
   Future<void> _refreshProducts(BuildContext context) async {
     await Provider.of<ProductsProvider>(context, listen: false)
-        .fetchAndSetData();
+        .fetchAndSetData(true);
   }
 
   @override
   Widget build(BuildContext context) {
-    final products = Provider.of<ProductsProvider>(context).items;
+    //final products = Provider.of<ProductsProvider>(context).items;
     return Scaffold(
       appBar: AppBar(
         title: Text("Your Products"),
@@ -30,18 +30,25 @@ class UserProductsScreen extends StatelessWidget {
         ],
       ),
       drawer: AppDrawer(),
-      body: RefreshIndicator(
-        onRefresh: () => _refreshProducts(context),
-        child: ListView.builder(
-          itemCount: products.length,
-          itemBuilder: (context, index) {
-            return UserProductItem(
-              id: products[index].id,
-              title: products[index].title,
-              imageUrl: products[index].imageUrl,
-            );
-          },
-        ),
+      body: FutureBuilder(
+        builder: (context, snapshot) =>
+            snapshot.connectionState == ConnectionState.waiting
+                ? Center(child: CircularProgressIndicator())
+                : RefreshIndicator(
+                    onRefresh: () => _refreshProducts(context),
+                    child: Consumer<ProductsProvider>(
+                      builder: (context, products, child) => ListView.builder(
+                        itemCount: products.items.length,
+                        itemBuilder: (context, index) {
+                          return UserProductItem(
+                            id: products.items[index].id,
+                            title: products.items[index].title,
+                            imageUrl: products.items[index].imageUrl,
+                          );
+                        },
+                      ),
+                    ),
+                  ),
       ),
     );
   }

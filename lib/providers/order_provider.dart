@@ -7,15 +7,19 @@ import 'package:shopping_flutter/models/cart.dart';
 import 'package:shopping_flutter/models/order.dart';
 
 class OrderProvider with ChangeNotifier {
-  List<Order> _items = [];
+  List<Order> _orders = [];
+  final String authData;
+  final String userId;
+
+  OrderProvider(this.authData, this.userId, this._orders);
 
   List<Order> get orders {
-    return [..._items];
+    return [..._orders];
   }
 
   Future<void> addOrder(List<Cart> products, double total) async {
-    const url =
-        "https://shopping-flutter-57578-default-rtdb.firebaseio.com/orders.json";
+    final url =
+        "https://shopping-flutter-57578-default-rtdb.firebaseio.com/orders.json?auth=$authData";
     final dateTime = DateTime.now();
 
     try {
@@ -32,7 +36,7 @@ class OrderProvider with ChangeNotifier {
               };
             }).toList()
           }));
-      _items.insert(
+      _orders.insert(
         0,
         Order(
           id: jsonDecode(response.body)["name"],
@@ -49,8 +53,8 @@ class OrderProvider with ChangeNotifier {
 
   /// Fetch order
   Future<void> fetchAndSetOrder() async {
-    const url =
-        "https://shopping-flutter-57578-default-rtdb.firebaseio.com/orders.json";
+    final url =
+        "https://shopping-flutter-57578-default-rtdb.firebaseio.com/orders.json?auth=$authData";
     final response = await http.get(url);
     List<Order> loadedOrder = [];
     final extractedData = jsonDecode(response.body) as Map<String, dynamic>;
@@ -58,14 +62,13 @@ class OrderProvider with ChangeNotifier {
     if (extractedData == null) {
       return;
     }
-
     extractedData.forEach((orderId, orderData) {
       loadedOrder.add(Order(
         id: orderId,
         total: orderData["total"],
         dateTime: DateTime.parse(orderData["dateTime"]),
         products: (orderData["products"] as List<dynamic>).map((item) {
-          Cart(
+          return Cart(
             id: item["id"],
             title: item["title"],
             price: item["price"],
@@ -76,7 +79,8 @@ class OrderProvider with ChangeNotifier {
     });
 
     /// reversed.toList() for ordering data by date modified.
-    _items = loadedOrder.reversed.toList();
+    _orders = loadedOrder.reversed.toList();
+
     notifyListeners();
   }
 }

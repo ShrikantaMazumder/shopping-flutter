@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopping_flutter/models/product.dart';
+import 'package:shopping_flutter/providers/auth_provider.dart';
 import 'package:shopping_flutter/providers/cart.dart';
 import 'package:shopping_flutter/screens/product_detail_screen.dart';
 
@@ -15,6 +16,7 @@ class ProductItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final product = Provider.of<Product>(context, listen: false);
     final cart = Provider.of<CartProvider>(context, listen: false);
+    final authData = Provider.of<AuthProvider>(context, listen: false);
     final scaffold = Scaffold.of(context);
     final primaryColor = Theme.of(context).primaryColor;
     return ClipRRect(
@@ -22,17 +24,23 @@ class ProductItem extends StatelessWidget {
       child: GridTile(
         child: GestureDetector(
           onTap: () {
-            Navigator.of(context).pushNamed(ProductDetailScreen.routeName,
-                arguments: product.id);
+            Navigator.of(context).pushNamed(
+              ProductDetailScreen.routeName,
+              arguments: product.id,
+            );
           },
-          child: Image.network(
-            product.imageUrl,
-            fit: BoxFit.cover,
+          child: Hero(
+            tag: product.id,
+            child: FadeInImage(
+                placeholder:
+                    AssetImage("assets/images/product-placeholder.png"),
+                image: NetworkImage(product.imageUrl),
+                fit: BoxFit.cover),
           ),
         ),
         footer: GridTileBar(
           leading: Consumer<Product>(
-            builder: (context, product, child) {
+            builder: (context, product, _) {
               return IconButton(
                 color: Theme.of(context).accentColor,
                 icon: Icon(product.isFavorite
@@ -40,7 +48,8 @@ class ProductItem extends StatelessWidget {
                     : Icons.favorite_border),
                 onPressed: () async {
                   try {
-                    await product.toggleFavStatus();
+                    await product.toggleFavStatus(
+                        authData.token, authData.getUserId);
                   } catch (error) {
                     scaffold.hideCurrentSnackBar();
                     scaffold.showSnackBar(

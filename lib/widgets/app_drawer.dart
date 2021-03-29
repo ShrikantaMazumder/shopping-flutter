@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shopping_flutter/providers/auth_provider.dart';
 import 'package:shopping_flutter/screens/order_screen.dart';
 import 'package:shopping_flutter/screens/user_products_screen.dart';
 
 class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
     return Drawer(
       child: Column(
         children: [
@@ -35,6 +38,18 @@ class AppDrawer extends StatelessWidget {
                 .pushReplacementNamed(UserProductsScreen.routeName),
           ),
           Divider(),
+          if (authProvider.isAuth) ...[
+            ListTile(
+              leading: Icon(Icons.logout),
+              title: Text("Logout"),
+              onTap: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pushReplacementNamed("/");
+                authProvider.logout();
+              },
+            ),
+            Divider(),
+          ]
         ],
       ),
     );

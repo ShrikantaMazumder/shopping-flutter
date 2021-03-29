@@ -16,9 +16,14 @@ class _OrderItemState extends State<OrderItem> {
   bool isExpanded = false;
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Column(
-        children: [
+    // print(widget.order.products);
+    return AnimatedContainer(
+      duration: Duration(milliseconds: 300),
+      height:
+          isExpanded ? min(widget.order.products.length * 20.0 + 110, 200) : 85,
+      curve: Curves.easeInOut,
+      child: Card(
+        child: Column(children: [
           ListTile(
             title: Text(
               widget.order.total.toString(),
@@ -35,25 +40,27 @@ class _OrderItemState extends State<OrderItem> {
               },
             ),
           ),
-          if (isExpanded) ...[
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-              height: min(widget.order.products.length * 20.0 + 10, 180),
-              child: ListView(
-                children: widget.order.products.map((product) {
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(product.title),
-                      Text(
-                          "${product.quantity}x  \$${product.quantity * product.price} "),
-                    ],
-                  );
-                }).toList(),
-              ),
+          AnimatedContainer(
+            duration: Duration(microseconds: 300),
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+            height: isExpanded
+                ? min(widget.order.products.length * 20.0 + 10, 180)
+                : 0,
+            curve: Curves.easeInOut,
+            child: ListView(
+              children: widget.order.products.map((product) {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(product.title),
+                    Text(
+                        "${product.quantity}x  \$${product.quantity * product.price} "),
+                  ],
+                );
+              }).toList(),
             ),
-          ]
-        ],
+          ),
+        ]),
       ),
     );
   }
